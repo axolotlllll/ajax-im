@@ -11,6 +11,26 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $birthdate = trim($_POST["birthdate"]);
     $profileImagePath = null;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
     // Image upload handling
     if (!empty($_FILES["profileImage"]["name"])) {
         $uploadDir = "profiles/"; 

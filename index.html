@@ -15,6 +15,16 @@
       background-color: #007bff;
       color: white;
     }
+    .image-preview {
+      max-width: 100%;
+      height: 150px;
+      border-radius: 5px;
+      object-fit: cover;
+      margin-top: 10px;
+    }
+    .profile-image-container {
+      margin-bottom: 15px;
+    }
   </style>
 </head>
 <body>
@@ -71,7 +81,6 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          
           <h1 class="modal-title" id="exampleModalLabel">Insert User</h1>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
@@ -117,8 +126,17 @@
             <div class="col-sm-6">
               <label for="ProfileImage" class="form-label">Profile Image</label>
               <input type="file" class="form-control" id="ProfileImage" name="profileImage" accept="image/*">
+              
+              <div id="currentImageContainer" class="profile-image-container mt-2" style="display: none;">
+                <label>Current Image:</label>
+                <img id="currentImage" class="image-preview" src="" alt="Current Profile Image">
+              </div>
+              
+              <div id="imagePreviewContainer" class="profile-image-container mt-2" style="display: none;">
+                <label>New Image Preview:</label>
+                <img id="imagePreview" class="image-preview" src="" alt="Profile Image Preview">
+              </div>
             </div>
-            
           </form>
         </div>
         <div class="modal-footer">

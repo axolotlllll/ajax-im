@@ -31,15 +31,64 @@ try {
         throw new Exception("Email already exists for another student");
     }
     
-    $query = "UPDATE students 
-              SET first_name = :first_name, 
-                  last_name = :last_name, 
-                  email = :email, 
-                  gender = :gender, 
-                  course = :course, 
-                  user_address = :user_address, 
-                  birthdate = :birthdate 
-              WHERE student_id = :student_id";
+    // Fetch current image path
+    $fetchImageQuery = "SELECT profile_image FROM students WHERE student_id = :student_id";
+    $fetchImageStmt = $connection->prepare($fetchImageQuery);
+    $fetchImageStmt->bindParam(':student_id', $studentId);
+    $fetchImageStmt->execute();
+    $currentImagePath = $fetchImageStmt->fetchColumn();
+    
+    // Image upload handling
+    $profileImagePath = null;
+    $imageUpdated = false;
+    
+    if (!empty($_FILES["profileImage"]["name"])) {
+        $uploadDir = "profiles/";
+        
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+        
+        $imageName = time() . "_" . basename($_FILES["profileImage"]["name"]);
+        $uploadFile = $uploadDir . $imageName;
+        
+        if (move_uploaded_file($_FILES["profileImage"]["tmp_name"], $uploadFile)) {
+            $profileImagePath = $uploadFile;
+            $imageUpdated = true;
+            
+            if ($currentImagePath && file_exists($currentImagePath)) {
+                unlink($currentImagePath);
+            }
+        } else {
+            throw new Exception("Image upload failed");
+        }
+    }
+    
+
+    
+    // Create the query based on whether an image was uploaded
+    if ($imageUpdated) {
+        $query = "UPDATE students 
+                  SET first_name = :first_name, 
+                      last_name = :last_name, 
+                      email = :email, 
+                      gender = :gender, 
+                      course = :course, 
+                      user_address = :user_address, 
+                      birthdate = :birthdate,
+                      profile_image = :profile_image
+                  WHERE student_id = :student_id";
+    } else {
+        $query = "UPDATE students 
+                  SET first_name = :first_name, 
+                      last_name = :last_name, 
+                      email = :email, 
+                      gender = :gender, 
+                      course = :course, 
+                      user_address = :user_address, 
+                      birthdate = :birthdate
+                  WHERE student_id = :student_id";
+    }
               
     $statement = $connection->prepare($query);
     $statement->bindParam(':student_id', $studentId);
@@ -51,8 +100,16 @@ try {
     $statement->bindParam(':user_address', $userAddress);
     $statement->bindParam(':birthdate', $birthdate);
     
+    if ($imageUpdated) {
+        $statement->bindParam(':profile_image', $profileImagePath);
+    }
+    
     if ($statement->execute()) {
-        echo json_encode(['res' => 'success']);
+        echo json_encode([
+            'res' => 'success',
+            'image_updated' => $imageUpdated,
+            'new_image_path' => $imageUpdated ? $profileImagePath : null
+        ]);
     } else {
         throw new Exception("Update failed");
     }
