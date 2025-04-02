@@ -1,6 +1,7 @@
 <?php
-include('connection.php');
-
+header('Content-Type: application/json');
+require 'connection.php';
+$response = ['res' => 'error', 'message' => 'Unknown error occurred.'];
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $firstName = trim($_POST["first_name"]);
     $lastName = trim($_POST["last_name"]);
@@ -12,25 +13,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $profileImagePath = null;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
     // Image upload handling
     if (!empty($_FILES["profileImage"]["name"])) {
         $uploadDir = "profiles/"; 
@@ -43,7 +25,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if (move_uploaded_file($_FILES["profileImage"]["tmp_name"], $uploadFile)) {
             $profileImagePath = $uploadFile;
         } else {
-            echo json_encode(["res" => "error", "message" => "Image upload failed"]);
+            $response = ["res" => "error", "message" => "Image upload failed"];
+            echo json_encode($response);
             exit;
         }
     }
@@ -56,7 +39,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $checkStmt->execute();
         
         if ($checkStmt->rowCount() > 0) {
-            echo json_encode(["res" => "error", "message" => "Email already exists"]);
+            $response = ["res" => "error", "message" => "Email already exists"];
+            echo json_encode($response);
             exit;
         }
 
@@ -74,14 +58,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt->bindParam(':profile_image', $profileImagePath, PDO::PARAM_STR);
 
         if ($stmt->execute()) {
-            echo json_encode(["res" => "success", "message" => "User added successfully!", "image" => $profileImagePath]);
+            $response = ["res" => "success", "message" => "User added successfully!", "image" => $profileImagePath];
         } else {
-            echo json_encode(["res" => "error", "message" => "Failed to add user"]);
+            $response = ["res" => "error", "message" => "Failed to add user"];
         }
     } catch (PDOException $e) {
-        echo json_encode(["res" => "error", "message" => "Database error: " . $e->getMessage()]);
+        $response = ["res" => "error", "message" => "Database error: " . $e->getMessage()];
     }
+
+    echo json_encode($response);
+    exit;
 }
 
 exit;
-?>
