@@ -3,79 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Studyante Dashboard</title>
+  <title>Student Management</title>
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <style>
     body {
-      padding-top: 20px;
-    }
-
-    .sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100vh;
-      width: 250px;
-      background: #2c3e50;
-      color: white;
       padding: 20px;
+      background-color: #f4f6f9;
     }
 
-    .sidebar .logo {
-      text-align: center;
-      padding: 20px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .sidebar .logo h1 {
-      font-size: 24px;
-      margin: 0;
-    }
-
-    .sidebar .nav-link {
-      color: rgba(255,255,255,0.8);
-      padding: 10px 0;
-      display: block;
-      text-decoration: none;
-      transition: color 0.3s;
-    }
-
-    .sidebar .nav-link:hover {
-      color: white;
-    }
-
-    .sidebar .nav-link.active {
-      color: white;
-      border-left: 3px solid #3498db;
-      padding-left: 10px;
-    }
-
-    .sidebar .profile-section {
-      position: absolute;
-      bottom: 20px;
-      width: 100%;
-    }
-
-    .sidebar .profile-pic {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      margin-bottom: 10px;
-    }
-
-    .sidebar .profile-name {
-      display: block;
-      font-size: 14px;
-      margin-bottom: 5px;
-    }
-
-    .main-content {
-      margin-left: 250px;
-      padding: 20px;
-    }
-
-    .main-content .container {
+    .container {
       max-width: 1200px;
     }
 
@@ -90,6 +27,9 @@
       background: #3498db;
       color: white;
       border-radius: 10px 10px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .table {
@@ -100,11 +40,6 @@
     .action-buttons {
       display: flex;
       gap: 5px;
-    }
-
-    .modal-header {
-      background: #3498db;
-      color: white;
     }
 
     .image-preview {
@@ -118,125 +53,41 @@
     .profile-image-container {
       margin-bottom: 15px;
     }
-
-    @media (max-width: 768px) {
-      .sidebar {
-        width: 100%;
-        height: auto;
-        position: static;
-      }
-
-      .main-content {
-        margin-left: 0;
-      }
-    }
   </style>
 </head>
 <body>
-  <div class="sidebar">
-    <div class="logo">
-      <h1>STUDYANTE</h1>
-    </div>
-    <nav>
-      <a href="#" class="nav-link active">
-        <i class="fas fa-home"></i> Home
-      </a>
-      <a href="#" class="nav-link">
-        <i class="fas fa-users"></i> Users  
-      </a>
-      <a href="#" class="nav-link">
-        <i class="fas fa-cog"></i> 
-      </a>
-    </nav>
-    <div class="profile-section">
-      <div class="profile-pic" id="userProfilePic">
-        <i class="fas fa-user-circle"></i>
-      </div>
-      <span class="profile-name" id="first_name">macmac </span>
-      <a href="logout.php" class="nav-link">
-        <i class="fas fa-sign-out-alt"></i> Logout
-      </a>
-    </div>
-  </div>
-
-  <div class="main-content">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-3">
-          <div class="card">
-            <div class="card-body">
-              <i class="fas fa-users fa-2x text-primary mb-2"></i>
-              <h3 class="stat-number" id="totalStudents">0</h3>
-              <p class="text-muted mb-0">Total Students</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card">
-            <div class="card-body">
-              <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
-              <h3 class="stat-number" id="verifiedStudents">0</h3>
-              <p class="text-muted mb-0">Verified Students</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card">
-            <div class="card-body">
-              <i class="fas fa-clock fa-2x text-info mb-2"></i>
-              <h3 class="stat-number" id="systemTime">--:--</h3>
-              <p class="text-muted mb-0">System Time</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card">
-            <div class="card-body">
-              <i class="fas fa-server fa-2x text-warning mb-2"></i>
-              <h3 class="stat-number" id="systemStatus">--</h3>
-              <p class="text-muted mb-0">System Status</p>
-            </div>
-          </div>
+  <div class="container">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">Student List</h5>
+        <div class="btn-group">
+          <button type="button" class="btn btn-success mr-2" id="btnCreateStudent" data-toggle="modal" data-target="#exampleModal">
+            <i class="fas fa-plus"></i> Add New Student
+          </button>
+          <a href="logout.php" class="btn btn-danger">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </a>
         </div>
       </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div class="d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Recent Students</h5>
-            <button id="btnCreateStudent" class="btn btn-light" data-toggle="modal" data-target="#exampleModal">
-              <i class="fas fa-plus"></i> Add New Student
-            </button>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table table-striped">
-              <thead class="thead-dark">
-                <tr>
-                  <th scope="col">iD</th>
-                  <th scope="col">First Name</th>
-                  <th scope="col">Last Name</th>
-                  <th scope="col">Email</th>
-                  <th scope="col">GEnder</th>
-                  <th scope="col">course</th>
-                  <th scope="col">Address</th>
-                  <th scope="col">Age</th>
-                  <th scope="col"></th>
-                  <th scope="col">Actions</th>
-
-                </tr>
-              </thead>
-              <tbody id="tableBody">
-              </tbody>
-            </table>
-          </div>
-        </div>
+      <div class="card-body">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Name</th>
+              <th scope="col">Email</th>
+              <th scope="col">Course</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 
-  <!-- Modal -->
+  <!-- Modal for Add/Edit Student -->
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
@@ -262,15 +113,15 @@
               <input type="email" class="form-control" id="Email" name="email">
             </div>
             <div class="col-sm-6">
-                <label for="Gender" class="form-label">Gender</label>
-                <select class="form-control" id="Gender" name="gender" required>
-                  <option value="">Select Gender</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
-                  <option value="Prefer not to say">Prefer not to say</option>
-                </select>
-              </div>
+              <label for="Gender" class="form-label">Gender</label>
+              <select class="form-control" id="Gender" name="gender" required>
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+                <option value="Prefer not to say">Prefer not to say</option>
+              </select>
+            </div>
             <div class="col-sm-6">
               <label for="Course" class="form-label">Course</label>
               <input type="text" class="form-control" id="Course" name="course">
@@ -289,11 +140,12 @@
               
               <div id="currentImageContainer" class="profile-image-container mt-2" style="display: none;">
                 <label>Current Image:</label>
+                <img id="currentImage" class="img-fluid image-preview" src="" alt="Current Profile Image">
               </div>
               
               <div id="imagePreviewContainer" class="profile-image-container mt-2" style="display: none;">
                 <label>New Image Preview:</label>
-                <img id="imagePreview" class="image-preview" src="" alt="Profile Image Preview">
+                <img id="imagePreview" class="img-fluid image-preview" src="" alt="Profile Image Preview">
               </div>
             </div>
           </form>
